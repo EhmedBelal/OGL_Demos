@@ -1,29 +1,26 @@
 #ifndef SHADER_CLASS_H
 #define SHADER_CLASS_H
 
-//ogl includes
-#include <glad/glad.h>
-#include <string>
-#include <fstream>
-#include <iostream>
-#include <cerrno>
+#include<glad/glad.h>
+#include<string>
+#include<fstream>
+#include<sstream>
+#include<iostream>
+#include<cerrno>
 
-std::string GetFileContents(const char* strFilename);
+std::string get_file_contents(const char* filename);
 
 class Shader
 {
 public:
-	//reference ID of the shader program
-	GLuint gluiShaderProgramID;
+	// Reference ID of the Shader Program
+	GLuint ID;
+	// Constructor that build the Shader Program from 2 different shaders
+	Shader(const char* vertexFile, const char* fragmentFile);
 
-	//constructor to build the shader program
-	Shader(const char* cVertexFile, const char* cFragmentFile);
-
-	//shader activation 
+	// Activates the Shader Program
 	void Activate();
-
-	//shader deletion
+	// Deletes the Shader Program
 	void Delete();
 };
-
 #endif
