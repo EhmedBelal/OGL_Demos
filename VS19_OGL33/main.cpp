@@ -2,6 +2,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <stb/stb_image.h>
 #include "ShaderClass.h"
 #include "VAO.h"
 #include "VBO.h"
@@ -19,20 +20,16 @@ const unsigned int SCR_HEIGHT = 800;
 
 GLfloat glfVertexInputData[] =
 {
-	//position										//color
-	-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,		1.0f, 0.0f, 0.0f,
-	0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,			0.0f, 1.0f, 0.0f,
-	0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f,		0.0f, 0.0f, 1.0f,
-	-0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,		1.0f, 0.0f, 0.0f,
-	0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,		0.0f, 1.0f, 0.0f,
-	0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f,			0.0f, 0.0f, 1.0f
+	-0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f, // Lower left corner
+	-0.5f,  0.5f, 0.0f,     0.0f, 1.0f, 0.0f, // Upper left corner
+	 0.5f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f, // Upper right corner
+	 0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 1.0f  // Lower right corner
 };
 
 GLuint gluiIndices[] =
 {
-	0, 3, 5,
-	3, 2, 4,
-	5, 4, 1
+	0, 2, 1, // Upper triangle
+	0, 3, 2 // Lower triangle
 };
 
 int main(void)
@@ -81,6 +78,13 @@ int main(void)
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
+
+	//Texture
+	int iImgWidth, iImgHeight, iNumColors;
+	unsigned char* bytes = stbi_load("pop_cat.png", &iImgWidth, &iImgHeight, &iNumColors, 0);
+
+	GLuint gluiTexture;
+	glGenTextures(1, &gluiTexture);
 #pragma endregion
 
 #pragma region GAME LOOP
@@ -92,7 +96,7 @@ int main(void)
 		objShaderProgram.Activate();
 
 		VAO1.Bind();
-		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(glfwWindow);
 		glfwPollEvents();
@@ -103,6 +107,7 @@ int main(void)
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
+	glDeleteTextures(1, &gluiTexture);
 	objShaderProgram.Delete();
 #pragma endregion
 
